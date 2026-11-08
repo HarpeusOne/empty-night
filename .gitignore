@@ -1,0 +1,24 @@
+# Godot 4+
+.godot/
+/android/
+export/
+*.translation
+
+# build artifacts
+build/
+dist/
+
+# raw AI generations stay out of git; curated assets go to art/final/
+art/raw/*
+!art/raw/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Claude Code personal settings
+.claude/settings.local.json
+
+# editor save backups (props.json.bak, overrides.json.bak)
+*.bak

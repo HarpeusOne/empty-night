@@ -1,0 +1,92 @@
+{
+  "dialogues": {
+    "hanna": {
+      "speaker_pl": "Hanna Rekòwskô",
+      "speaker_en": "Hanna Rekòwskô",
+      "start": "intro",
+      "nodes": {
+        "intro": {
+          "text_pl": "Hanna Rekòwskô nie podaje ręki. Wyciera szklankę, choć jest sucha.\n— Marta Kreft — mówi, jakby sprawdzała, czy imię się zgadza. — Wróciłaś.\nNa ladzie leży zeszyt z listą nazwisk. Hanna odwraca go okładką do góry.\nZa nią, w szklanej gablocie, wisi różaniec i zdjęcie klasy z 2012 roku.",
+          "text_en": "Hanna Rekòwskô does not offer her hand. She wipes a glass, though it is dry.\n“Marta Kreft,” she says, as if checking that the name fits. “You came back.”\nA notebook with a list of names lies on the counter. Hanna turns it so the cover faces up.\nBehind her, a rosary and a class photo from 2012 hang in a glass display case.",
+          "choices": [
+            {
+              "text_pl": "Zapytaj, skąd zna jej imię",
+              "text_en": "Ask how she knows my name",
+              "next": "hub"
+            },
+            {
+              "text_pl": "Rozejrzyj się po sklepie",
+              "text_en": "Look around the shop",
+              "next": "hub"
+            }
+          ]
+        },
+        "hub": {
+          "text_pl": "Hanna układa na ladzie trzy słoiki: ogórki, powidła, coś ciemnego bez etykiety.\n— Zaduszki jutro — mówi. — Dziś wieś sprząta. Ty też powinnaś.\nZa oknem ktoś przechodzi w stronę kościoła i nie odwraca głowy.",
+          "text_en": "Hanna sets three jars on the counter: pickles, plum jam, something dark without a label.\n“All Souls’ Day is tomorrow,” she says. “Today the village cleans. You should too.”\nOutside the window, someone walks toward the church and does not turn their head.",
+          "choices": [
+            {
+              "text_pl": "Zapytaj o ojca",
+              "text_en": "Ask about my father",
+              "next": "father",
+              "set": {
+                "trust_hanna": 1
+              }
+            },
+            {
+              "text_pl": "Zapytaj o dzwon",
+              "text_en": "Ask about the bell",
+              "next": "bell"
+            },
+            {
+              "text_pl": "Zapytaj o matkę",
+              "text_en": "Ask about my mother",
+              "next": "mother",
+              "set": {
+                "knows_mother": true
+              }
+            },
+            {
+              "text_pl": "Wyjdź",
+              "text_en": "Leave",
+              "next": ""
+            }
+          ]
+        },
+        "father": {
+          "text_pl": "— Antoni? — Hanna odkłada szklankę. — Był tu w piątek. Kupił świece. Sześć.\nMówi, że poszedł do dzwonnicy i że wróci przed nocą.\nNie wrócił.\n— Może wróci — dodaje. — Ludzie wracają na Zaduszki.\nJej dłoń przez chwilę leży na zeszycie z listą.",
+          "text_en": "“Antoni?” Hanna sets down the glass. “He was here on Friday. He bought candles. Six.”\nHe said he was going to the bell tower and would be back before night.\nHe did not come back.\n“Maybe he will,” she adds. “People come back for All Souls’ Day.”\nHer hand rests on the notebook with the list for a moment.",
+          "choices": [
+            {
+              "text_pl": "Wróć",
+              "text_en": "Back",
+              "next": "hub"
+            }
+          ]
+        },
+        "bell": {
+          "text_pl": "— Dzwon bije, bo ktoś go prosi — mówi Hanna.\n— Kto?\n— Wieś.\nŚmieje się krótko, bez radości.\n— Jak chcesz nagrywać, to idź do księdza. On ma klucz. I cierpliwość.",
+          "text_en": "“The bell rings because someone asks it to,” Hanna says.\n“Who?”\n“The village.”\nShe laughs briefly, without joy.\n“If you want to record it, go to the priest. He has the key. And patience.”",
+          "choices": [
+            {
+              "text_pl": "Wróć",
+              "text_en": "Back",
+              "next": "hub"
+            }
+          ]
+        },
+        "mother": {
+          "text_pl": "Hanna przez chwilę patrzy na drzwi, jakby chciała, żeby ktoś wszedł.\n— Zofia była dobrą kobietą — mówi wreszcie. — Utonęła w jeziorze. Wiesz to.\n— Wiem, co mi powiedziano.\n— To wiedz też, że wieś jej nie zapomniała.\nNie wyjaśnia, co to znaczy.",
+          "text_en": "Hanna looks at the door for a moment, as if she wanted someone to come in.\n“Zofia was a good woman,” she says at last. “She drowned in the lake. You know that.”\n“I know what I was told.”\n“Then know this too: the village has not forgotten her.”\nShe does not explain what that means.",
+          "choices": [
+            {
+              "text_pl": "Wróć",
+              "text_en": "Back",
+              "next": "hub"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

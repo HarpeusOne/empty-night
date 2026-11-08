@@ -1,0 +1,36 @@
+{
+  "documents": [
+    {
+      "id": "note_father_I1",
+      "title_pl": "List Antoniego",
+      "body_pl": "Marto. Jeśli to czytasz, znaczy, że nie zdążyłem. Nie otwieraj dzwonnicy. Jeśli usłyszysz dzwon o zmierzchu, nie licz uderzeń. I nie ufaj temu, co wieś nazywa porządkiem. Tata — na odwrocie rysunek: dzwon, a pod nim trzy kreski, jedna przekreślona.",
+      "title_en": "Antoni's Letter",
+      "body_en": "Marta. If you are reading this, it means I did not make it in time. Do not open the bell tower. If you hear the bell at dusk, do not count the strikes. And do not trust what the village calls order. Dad — on the back, a drawing: a bell, and beneath it three strokes, one crossed out.",
+      "source": "story/act1.ink act1_letter (wierny tekst listu bez dopisku; opis odwrotu); story/outline.md §7.1 beat 3, §11 dok. 1"
+    },
+    {
+      "id": "note_ledger_SQ",
+      "title_pl": "Rachunek remontu dzwonu 1898",
+      "body_pl": "Linia, 14 października 1898. Za remont dzwonu parafialnego: nowy sworzeń, łożysko i dwa dni pracy — 46 marek. Za kamień z pola za młynem i jego transport — 12 marek. Za wpis do księgi i poświęcenie — 3 marki. Zapłacono gotówką; pokwitowanie podpisał Szymon Kreft, dzwonnik. Dzwon zawieszono ponownie 2 listopada, przed Zaduszkami.",
+      "title_en": "Bell Repair Ledger, 1898",
+      "body_en": "Linia, 14 October 1898. For the repair of the parish bell: a new pin, a bearing and two days' work — 46 marks. For the stone from the field beyond the mill and its transport — 12 marks. For the entry in the book and the blessing — 3 marks. Paid in cash; the receipt was signed by Szymon Kreft, bellringer. The bell was hung again on 2 November, before All Souls' Day.",
+      "source": "story/outline.md §7.1/§11 dok. 2; docs/level-bible.md §7.4 marker item_note_ledger_SQ — lokalizacja SQ (nie I-1); kwoty i daty są fikcją gry"
+    },
+    {
+      "id": "note_well_SQ",
+      "title_pl": "Lista imion Hanny (fragment)",
+      "body_pl": "Kartka z zeszytu Hanny, znaleziona przy studni. Lata: 1998, 2005, 2019, 2026; przy starszych wpisach imiona wyblakły. 2019 — Zofia. 2026 — Ewa, dopisana inną ręką, jeszcze nie zamazana. Na marginesie, ołówkiem: co siedem lat, przed Zaduszkami.",
+      "title_en": "Hanna's List of Names (fragment)",
+      "body_en": "A page from Hanna's notebook, found by the well. The years: 1998, 2005, 2019, 2026; beside the older entries the names have faded. 2019 — Zofia. 2026 — Ewa, added in a different hand, not yet crossed out. In the margin, in pencil: every seven years, before All Souls' Day.",
+      "source": "story/outline.md §7.1/§11 dok. 4 (lista imion Hanny; wyłącznie lata z kanonu P2: 1998/2005/2019/2026); story/act1.ink act1_hanna_intro; docs/level-bible.md §7.4 marker item_note_well_SQ"
+    },
+    {
+      "id": "note_first_verse",
+      "title_pl": "Pierwsza zwrotka",
+      "body_pl": "Ze śpiewnika owiniętego w ceratę; pierwsza strona, data 1898. Na okładce ktoś napisał: „Na siedem głosów”. Pod spodem, równym szkolnym charakterem pisma: „Dzwon bez serca, głowa bez ciała. Imię bez domu, dom bez imienia.” Dalej tylko puste linie i ślad po wyrwanej kartce.",
+      "title_en": "The First Verse",
+      "body_en": "From the songbook wrapped in oilcloth; the first page, dated 1898. On the cover someone had written: “For seven voices.” Beneath it, in an even schoolroom hand: “A bell without a heart, a head without a body. A name without a home, a home without a name.” Beyond that, only empty staves and the trace of a torn-out page.",
+      "source": "story/act1.ink act1_porch, act1_jadwiga_verse; story/outline.md §7.1 P1/§11 dok. 6; docs/level-bible.md §7.1 P1 (puzzle_P1_safe_SQ); bez nowych nazw folkloru"
+    }
+  ]
+}
