@@ -1,4 +1,4 @@
-# Trauma Village — Bestiariusz kaszubski
+# Empty Night — Bestiariusz kaszubski
 
 | Pole | Wartość |
 |---|---|

@@ -25,7 +25,7 @@ func _check(condition: bool, label: String) -> void:
 
 
 func _run() -> void:
-	print("=== Trauma Village walker motion test ===")
+	print("=== Empty Night walker motion test ===")
 	var world = WorldScript.new()
 	world.capture_mouse = false
 	root.add_child(world)

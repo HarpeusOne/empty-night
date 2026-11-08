@@ -1,4 +1,4 @@
-# Trauma Village — kontekst projektu
+# Empty Night — kontekst projektu
 
 Gra: linearny survival horror w stylu PS2, Kaszuby, Linia 2026.
 Dzień → zmierzch → noc na tej samej przestrzeni. OTS, pistolet + strzelba,

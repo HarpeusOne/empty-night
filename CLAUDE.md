@@ -1,4 +1,8 @@
-# Trauma Village — kontekst dla Claude Code
+# Empty Night — kontekst dla Claude Code
+
+**Nazwa: Empty Night** (tytuł kaszubski „Pùstô noc”, od zwyczaju czuwania przy zmarłym; pisownię kaszubską
+potwierdzić u osoby mówiącej po kaszubsku). Dawna robocza nazwa: Trauma Village. Repo: `git@github.com:HarpeusOne/empty-night.git`
+(gałąź `main`, push przez SSH). Folder lokalny nadal nazywa się `trauma-village-v2`, stąd ścieżki w komendach.
 
 Gra: linearny survival horror w stylu PS2, Kaszuby, Linia 2026.
 Dzień → zmierzch → noc na tej samej przestrzeni. Kamera z oczu (FPP), pistolet +

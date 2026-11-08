@@ -39,7 +39,7 @@ func _check(condition: bool, label: String) -> void:
 
 
 func _run() -> void:
-	print("=== Trauma Village blockout collision test ===")
+	print("=== Empty Night blockout collision test ===")
 	var level = LevelScene.instantiate()
 	level.spawn_walker = false
 	root.add_child(level)

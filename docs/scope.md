@@ -1,4 +1,4 @@
-# Trauma Village — Scope lock
+# Empty Night — Scope lock
 
 | Pole | Wartość |
 |---|---|

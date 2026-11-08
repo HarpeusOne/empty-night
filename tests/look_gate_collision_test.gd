@@ -26,7 +26,7 @@ func _check(condition: bool, label: String) -> void:
 
 
 func _run() -> void:
-	print("=== Trauma Village look-gate collision test ===")
+	print("=== Empty Night look-gate collision test ===")
 	var world = WorldScript.new()
 	world.capture_mouse = false
 	root.add_child(world)

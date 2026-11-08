@@ -1,4 +1,4 @@
-# Trauma Village — Dziennik źródeł bestiariusza
+# Empty Night — Dziennik źródeł bestiariusza
 
 | Pole | Wartość |
 |---|---|

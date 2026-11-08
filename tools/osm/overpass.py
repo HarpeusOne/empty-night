@@ -11,7 +11,7 @@ def query(text, timeout=420):
     for url in MIRRORS:
         try:
             req = urllib.request.Request(url, data=urllib.parse.urlencode({"data": text}).encode(),
-                                         headers={"User-Agent": "trauma-village-research"})
+                                         headers={"User-Agent": "empty-night-research"})
             return json.load(urllib.request.urlopen(req, timeout=timeout)), url
         except Exception as exc:  # network errors differ per mirror; try the next one
             last = f"{url}: {exc}"

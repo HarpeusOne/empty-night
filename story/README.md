@@ -1,4 +1,4 @@
-# Trauma Village — konwencje narracji (Ink)
+# Empty Night — konwencje narracji (Ink)
 
 | Pole | Wartość |
 |---|---|

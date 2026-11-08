@@ -1,4 +1,4 @@
-# Trauma Village: level bible
+# Empty Night: level bible
 
 Wersja: blockout v1 (VS-1 + pełny szkielet wsi)
 Scena: `levels/village.tscn` (jedyna scena levelu)

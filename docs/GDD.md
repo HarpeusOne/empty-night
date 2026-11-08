@@ -1,4 +1,4 @@
-# Trauma Village — Game Design Document
+# Empty Night — Game Design Document
 
 | Pole | Wartość |
 |---|---|

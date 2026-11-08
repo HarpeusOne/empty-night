@@ -1,4 +1,4 @@
-# Trauma Village — outline fabuły
+# Empty Night — outline fabuły
 
 | Pole | Wartość |
 |---|---|

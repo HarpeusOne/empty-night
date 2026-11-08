@@ -1,4 +1,4 @@
-# Trauma Village — Kryteria akceptacji
+# Empty Night — Kryteria akceptacji
 
 | Pole | Wartość |
 |---|---|

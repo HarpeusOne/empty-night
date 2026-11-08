@@ -1,4 +1,4 @@
-# Trauma Village — Dzień / Zmierzch / Noc
+# Empty Night — Dzień / Zmierzch / Noc
 
 | Pole | Wartość |
 |---|---|

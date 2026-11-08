@@ -1,4 +1,4 @@
-# Trauma Village — Art Bible v0.1
+# Empty Night — Art Bible v0.1
 
 Współczesna wieś kaszubska, Linia 2026. Survival horror w estetyce PS2. Dokument źródłowy dla
 wszystkich assetów graficznych. Obowiązuje `artist`, `level-designer` i
