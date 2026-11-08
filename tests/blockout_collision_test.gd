@@ -70,7 +70,7 @@ func _run() -> void:
 func _test_data(level) -> void:
 	var n: int = level.footprints.size()
 	_check(n >= 300, "greybox has %d buildings (expected >= 300)" % n)
-	var visible := 1     # the church
+	var visible: int = level.key_footprint_count()     # the church and the school
 	for id in level.buildings.order:
 		if not level.buildings.is_hidden(id):
 			visible += 1

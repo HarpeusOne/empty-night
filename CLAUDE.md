@@ -10,7 +10,7 @@ strzelba, zagadki środowiskowe, 1 typ wroga, 2 zakończenia, mruganie jako mech
 Silnik: Godot **4.7.2** (flatpak `org.godotengine.Godot`), GDScript, renderer
 **Compatibility** (`gl_compatibility`).
 
-## Stan na koniec sesji 2026-11-08 (druga sesja: edytor budynków)
+## Stan na koniec sesji 2026-11-08 (piąta sesja: szkoła i obiekty terenu szkoły)
 
 Szczegóły i plan na kolejną sesję: `docs/session-notes.md`.
 
@@ -139,13 +139,16 @@ python3 tools/art/gen_grounds_textures.py
 flatpak run org.godotengine.Godot --headless --path /var/home/harp9x/github/trauma-village-v2 --script res://tests/map_editor_test.gd
 flatpak run org.godotengine.Godot --headless --path /var/home/harp9x/github/trauma-village-v2 --script res://tests/fly_test.gd
 flatpak run org.godotengine.Godot --path /var/home/harp9x/github/trauma-village-v2 --script res://tools/church_shots.gd   # docs/look/church_*.png
+flatpak run org.godotengine.Godot --path /var/home/harp9x/github/trauma-village-v2 --script res://tools/school_shots.gd   # docs/look/school_*.png
 flatpak run org.godotengine.Godot --path /var/home/harp9x/github/trauma-village-v2 --script res://tools/editor_shot.gd    # docs/look/editor.png
 flatpak run org.godotengine.Godot --path /var/home/harp9x/github/trauma-village-v2 --script res://tools/props_shot.gd     # docs/look/props_*.png (nowe obiekty, place z kostki, znicze nocą)
+flatpak run org.godotengine.Godot --path /var/home/harp9x/github/trauma-village-v2 --script res://tools/yard_props_shot.gd   # docs/look/yard_*.png (obiekty terenu szkoły)
 # edytor budynków (zakładka Budynki w F2): test, zrzut, plansza typów
 flatpak run org.godotengine.Godot --headless --path /var/home/harp9x/github/trauma-village-v2 --script res://tests/building_editor_test.gd
 flatpak run org.godotengine.Godot --path /var/home/harp9x/github/trauma-village-v2 --script res://tools/building_editor_shot.gd   # docs/look/building_editor.png, building_openings*.png (okna/drzwi/elewacja)
 flatpak run org.godotengine.Godot --path /var/home/harp9x/github/trauma-village-v2 --script res://tools/archetypes_shot.gd && python3 tools/art/arch_sheet.py   # docs/look/archetypes.png
 python3 tools/art/gen_building_textures.py   # pustaki, blacha, brama garażowa, witryna
+python3 tools/art/gen_yard_textures.py       # teren szkoły: zielona farba, siatka, kwiaty, gałązki, sztuczna trawa
 # po dodaniu nowej klasy (class_name) odśwież import: ... --headless --import
 ```
 
@@ -178,6 +181,8 @@ kolizji od tyłu.
 
 ## Budynki kluczowe
 - Kościół (pilot, z otoczeniem): `docs/key-buildings/church.md`, zrzuty `tools/church_shots.gd`.
+- Szkoła (stara szkoła, nowe skrzydło, hala): `docs/key-buildings/school.md`, model `src/world/school_model.gd`,
+  zrzuty `tools/school_shots.gd`, tekstury `python3 tools/art/gen_school_textures.py`.
 - Edytor mapy w grze (F2): `docs/map-editor.md`; dane `data/map/props.json`; test `tests/map_editor_test.gd`.
 - Budynki: `src/world/building_set.gd` (wszystkie domy, scalona siatka, zmiany autora), `building_kit.gd` (bryła z typu),
   `building_editor.gd` (zakładka Budynki, F3). Typy: `data/buildings/archetypes.json`; zmiany autora:

@@ -49,6 +49,7 @@ var church_center_en := Vector2.ZERO     # (east, north) of the footprint centro
 var props: MapProps
 var buildings: BuildingSet
 var _church_fp: Dictionary = {}
+var _school_fps: Array = []
 
 
 func _ready() -> void:
@@ -93,7 +94,15 @@ func _to3(east: float, north: float, y: float = 0.0) -> Vector3:
 func point_in_footprint(p: Vector2) -> int:
 	if not _church_fp.is_empty() and Geometry2D.is_point_in_polygon(p, _church_fp["ring"]):
 		return int(_church_fp["id"])
+	for f in _school_fps:
+		if Geometry2D.is_point_in_polygon(p, f["ring"]):
+			return int(f["id"])
 	return buildings.point_in_footprint(p) if buildings != null else -1
+
+
+## Hand-made buildings outside the BuildingSet (the church and the school's two OSM buildings).
+func key_footprint_count() -> int:
+	return (0 if _church_fp.is_empty() else 1) + _school_fps.size()
 
 
 func _make_materials() -> void:
@@ -151,10 +160,41 @@ func _make_materials() -> void:
 		"p_box_hedge": PS2Look.make_material("p_box_hedge"),
 		"p_gold": PS2Look.make_material("plaster_grey", Color(0.95, 0.78, 0.40)),
 		"p_concrete": PS2Look.make_material("plaster_grey", Color(0.92, 0.92, 0.88)),
+		# school yard props (tools/art/gen_yard_textures.py)
+		"y_paint": PS2Look.make_material("y_paint"),
+		"y_chainlink": PS2Look.make_material("y_chainlink"),
+		"y_net": PS2Look.make_material("y_net"),
+		"y_flowers": PS2Look.make_material("y_flowers"),
+		"y_twigs": PS2Look.make_material("y_twigs"),
+		"y_turf": PS2Look.make_material("y_turf"),
+		"y_line": PS2Look.make_material("plaster_grey", Color(1.35, 1.35, 1.32)),
+		"y_soil": PS2Look.make_material("gravel", Color(0.55, 0.45, 0.38)),
+		"y_pole": PS2Look.make_material("plaster_grey", Color(0.74, 0.73, 0.69)),
+		"y_steel": PS2Look.make_material("plaster_grey", Color(0.46, 0.47, 0.48)),
+		"y_insulator": PS2Look.make_material("plaster_grey", Color(1.1, 1.08, 1.0)),
 		# church roofs: green patinated sheet on the nave and the wings, dark grey on the rear and the tower cap
 		"c_roof_green": PS2Look.make_material("c_roof_metal", Color(0.70, 0.98, 0.90)),
 		"c_roof_dark": PS2Look.make_material("c_roof_metal", Color(0.60, 0.61, 0.64)),
 		"c_wood": PS2Look.make_material("c_timber", Color(0.55, 0.40, 0.30)),
+		# the school (src/world/school_model.gd, tools/art/gen_school_textures.py)
+		"s_beige": PS2Look.make_material("s_plaster", Color(1.10, 0.93, 0.78)),
+		"s_orange": PS2Look.make_material("s_plaster", Color(0.98, 0.64, 0.44)),
+		"s_plinth": PS2Look.make_material("s_plaster", Color(0.80, 0.52, 0.40)),
+		"s_white": PS2Look.make_material("s_plaster", Color(1.08, 1.08, 1.08)),
+		"s_grey": PS2Look.make_material("s_plaster", Color(0.78, 0.79, 0.81)),
+		"s_roof": PS2Look.make_material("s_sheet", Color(0.66, 0.44, 0.36)),
+		"s_roof_wing": PS2Look.make_material("s_sheet", Color(0.48, 0.38, 0.35)),
+		"s_clad": PS2Look.make_material("s_sheet", Color(1.10, 0.98, 0.76)),
+		"s_fascia": PS2Look.make_material("s_plaster", Color(0.46, 0.32, 0.27)),
+		"s_frame": PS2Look.make_material("s_plaster", Color(0.30, 0.25, 0.23)),
+		"s_rail": PS2Look.make_material("s_plaster", Color(0.62, 0.32, 0.26)),
+		"s_brick": PS2Look.make_material("brick", Color(1.10, 0.82, 0.66)),
+		"s_win": PS2Look.make_material("s_window_new"),
+		"s_win_old": PS2Look.make_material("s_window_old"),
+		"s_glazing": PS2Look.make_material("s_glazing"),
+		"s_door": PS2Look.make_material("s_door"),
+		"s_door_plain": PS2Look.make_material("s_plaster", Color(0.62, 0.64, 0.66)),
+		"s_steps": PS2Look.make_material("brick", Color(1.15, 0.62, 0.52)),
 	}
 
 
@@ -262,12 +302,22 @@ func _all_road_points() -> Array:
 	return pts
 
 
-## The church goes into the static level mesh; every other building into the editable BuildingSet
+## The school's two OSM buildings (the old school and the gym footprint, which also holds the new wing) are one
+## hand-made model (SchoolModel) instead of two archetype houses.
+const SCHOOL_IDS := [864794699, 864794700]
+
+
+## The church (and the school) go into the static level mesh; every other building into the editable BuildingSet
 ## (src/world/building_set.gd, archetypes in data/buildings/archetypes.json, author's changes in
 ## data/blockout/overrides.json).
 func _church_and_buildings(lp: LowPoly, col_faces: PackedVector3Array) -> void:
+	var rest: Array = []
 	for b in data["buildings"]:
+		if int(b["id"]) in SCHOOL_IDS:
+			_school_part(col_faces, b)
+			continue
 		if String(b["kind"]) != "church":
+			rest.append(b)
 			continue
 		var ring := PackedVector2Array()
 		for p in b["ring"]:
@@ -283,7 +333,9 @@ func _church_and_buildings(lp: LowPoly, col_faces: PackedVector3Array) -> void:
 	buildings.materials = materials
 	buildings.rebuilt.connect(_refresh_footprints)
 	add_child(buildings)
-	buildings.setup(data["buildings"], _all_road_points(), overrides_path)
+	buildings.setup(rest, _all_road_points(), overrides_path)
+	if not _school_fps.is_empty():
+		SchoolModel.new(lp).build()
 	_refresh_footprints()
 
 
@@ -291,12 +343,27 @@ func _refresh_footprints() -> void:
 	footprints = []
 	if not _church_fp.is_empty():
 		footprints.append(_church_fp)
+	footprints.append_array(_school_fps)
 	footprints.append_array(buildings.footprints)
 	var st: Dictionary = buildings.stats
 	gable_roofs = int(st.get("gable", 0)) + int(st.get("hip", 0)) + 1
 	flat_roofs = int(st.get("flat", 0))
 	roof_failures = int(st.get("roof_fail", 0))
 	window_count = int(st.get("windows", 0))
+
+
+## One OSM building of the school: collision = its footprint (walls up to the eaves), a footprint for picking and
+## the wall test. The visible model is built once for both (SchoolModel).
+func _school_part(col_faces: PackedVector3Array, b: Dictionary) -> void:
+	var ring := SchoolModel.ring_godot(b["ring"])
+	var h := 7.4 if String(b["kind"]) == "school" else 13.0
+	for i in range(ring.size()):
+		var a := ring[i]
+		var c := ring[(i + 1) % ring.size()]
+		col_faces.append_array([Vector3(a.x, 0.0, a.y), Vector3(c.x, 0.0, c.y), Vector3(c.x, h, c.y),
+			Vector3(a.x, 0.0, a.y), Vector3(c.x, h, c.y), Vector3(a.x, h, a.y)])
+	_school_fps.append({"id": int(b["id"]), "ring": ring, "height": h, "top": h + 1.5, "kind": String(b["kind"]),
+		"irregular": false})
 
 
 ## The church is a hand-modelled landmark (ChurchModel). Its collision stays the OSM footprint, so the wall test

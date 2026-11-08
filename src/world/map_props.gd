@@ -50,6 +50,16 @@ const TYPES := {
 	"area_cobble_grey": {"label": "Plac: kostka grafit", "kind": "area"},
 	"area_gravel": {"label": "Plac: żwir", "kind": "area"},
 	"area_asphalt": {"label": "Plac: asfalt", "kind": "area"},
+	# the school yard (author's photos, 2026-11-08; textures tools/art/gen_yard_textures.py)
+	"tree_old": {"label": "Stare drzewo liściaste", "kind": "point"},
+	"tree_pollard": {"label": "Drzewo ogłowione", "kind": "point"},
+	"flowers": {"label": "Rabata z kwiatami", "kind": "point"},
+	"gate_green": {"label": "Brama metalowa zielona", "kind": "point"},
+	"gate_small": {"label": "Furtka zielona", "kind": "point"},
+	"pole_lamp": {"label": "Latarnia na słupie", "kind": "point"},
+	"pitch": {"label": "Boisko (40 x 20 m)", "kind": "point"},
+	"fence_green": {"label": "Płot: zielona siatka", "kind": "line", "w": 0.0},
+	"power_line": {"label": "Linia energetyczna", "kind": "line", "w": 0.0},
 }
 
 ## Paving surfaces: material key, texture tile (m) and layer. Everything of one material lies at ONE height and
@@ -283,6 +293,10 @@ func _build(it: Dictionary) -> void:
 				_build_hedge(root, sample(pts, smooth, 0.8), id)
 			elif type == "hedge_box":
 				_build_hedge_box(root, sample(pts, smooth, 0.8), id)
+			elif type == "fence_green":
+				_build_fence_green(root, sample(pts, smooth, 2.5), id)
+			elif type == "power_line":
+				_build_power_line(root, sample(pts, smooth, 25.0), id)
 			else:
 				_build_fence(root, type, sample(pts, smooth, 3.0), id)
 		"area":
@@ -429,6 +443,25 @@ func _point_mesh(type: String, k: float, lp: LowPoly, col: PackedVector3Array) -
 			lp.cylinder("p_metal", Vector3(0, 0.74 * k, 0), 0.265 * k, 0.07 * k, 8, Color(0.8, 0.8, 0.8), Color.WHITE, 0.5)
 			lp.cylinder("c_black", Vector3(0, 0.75 * k, 0), 0.215 * k, 0.065 * k, 8)
 			_col_trunk(col, 0.27 * k, 0.8 * k)
+		"tree_old":
+			_tree_old(lp, k)
+			_col_trunk(col, 0.5 * k, 3.0)
+		"tree_pollard":
+			_tree_pollard(lp, k)
+			_col_trunk(col, 0.32 * k, 3.0)
+		"flowers":
+			_flowers(lp, k)
+		"gate_green":
+			_gate(lp, 4.0 * k, 2)
+			_col_box(col, 2.1 * k, 0.08, 1.6)
+		"gate_small":
+			_gate(lp, 1.1 * k, 1)
+			_col_box(col, 0.65 * k, 0.08, 1.6)
+		"pole_lamp":
+			_pole_lamp(lp, k)
+			_col_box(col, 0.15, 0.15, 3.0)
+		"pitch":
+			_pitch(lp, col, k)
 		"notice_board":
 			for sx in [-0.7, 0.7]:
 				lp.box("p_metal", Vector3(sx * k, 1.0 * k, 0), Vector3(0.07 * k, 2.0 * k, 0.07 * k), 1.0)
@@ -768,3 +801,281 @@ func _build_fence(root: Node3D, type: String, pts: Array, id: int) -> void:
 					Vector3(0, 0, float(sg)))
 		_col_wall(col, 0.0, 0.0, length, 0.0, h)
 		_attach(seg, lp, col, id)
+
+
+# ---- the school yard (2026-11-08)
+
+## A tapered prism from a to b (any direction): branches, leaning poles, cross arms. `sides` 4 = square section.
+static func _limb(lp: LowPoly, key: String, a: Vector3, b: Vector3, r0: float, r1: float, sides: int = 5,
+		c0: Color = Color(0.6, 0.6, 0.6), c1: Color = Color.WHITE, tile: float = 1.0) -> void:
+	var axis := (b - a).normalized()
+	var ref := Vector3.UP if absf(axis.y) < 0.95 else Vector3.RIGHT
+	var e1 := axis.cross(ref).normalized()
+	var e2 := axis.cross(e1).normalized()
+	var length := a.distance_to(b)
+	for i in range(sides):
+		var a0 := TAU * (float(i) + 0.5) / sides
+		var a1 := TAU * (float(i) + 1.5) / sides
+		var d0 := e1 * cos(a0) + e2 * sin(a0)
+		var d1 := e1 * cos(a1) + e2 * sin(a1)
+		var u0 := float(i) / sides * TAU * r0 / tile
+		var u1 := float(i + 1) / sides * TAU * r0 / tile
+		lp.tri(key, a + d0 * r0, a + d1 * r0, b + d1 * r1, Vector2(u0, length / tile), Vector2(u1, length / tile), Vector2(u1, 0),
+			c0, c0, c1, d0, d1, d1)
+		lp.tri(key, a + d0 * r0, b + d1 * r1, b + d0 * r1, Vector2(u0, length / tile), Vector2(u1, 0), Vector2(u0, 0),
+			c0, c1, c1, d0, d1, d0)
+		lp.tri(key, b + d0 * r1, b + d1 * r1, b, Vector2.ZERO, Vector2(0.1, 0), Vector2(0.05, 0.1), c1, c1, c1, axis, axis, axis)
+
+
+## A cut-out card seen from both sides (twigs, flowers, nets): p0..p3 counter-clockwise from the front.
+static func _card(lp: LowPoly, key: String, p0: Vector3, p1: Vector3, p2: Vector3, p3: Vector3, u: float, v: float,
+		c_bot: Color = Color(0.8, 0.8, 0.8), c_top: Color = Color.WHITE) -> void:
+	var n := (p1 - p0).cross(p3 - p0).normalized()
+	lp.quad_out(key, p0, p1, p2, p3, Vector2(0, v), Vector2(u, v), Vector2(u, 0), Vector2(0, 0), c_bot, c_top, n)
+	lp.quad_out(key, p1, p0, p3, p2, Vector2(u, v), Vector2(0, v), Vector2(0, 0), Vector2(u, 0), c_bot, c_top, -n)
+
+
+## An old broad-leaved tree (lime / maple): a thick trunk splitting into three limbs, a wide lumpy crown.
+static func _tree_old(lp: LowPoly, k: float) -> void:
+	var dark := Color(0.5, 0.5, 0.5)
+	var fork := Vector3(0.15, 3.0, 0.05) * k
+	_limb(lp, "g_bark", Vector3.ZERO, fork, 0.5 * k, 0.38 * k, 7, dark, Color(0.8, 0.8, 0.8), 2.0)
+	var ends := [Vector3(2.2, 6.4, 0.6), Vector3(-1.9, 6.8, 1.0), Vector3(0.2, 7.6, -2.0)]
+	for i in range(ends.size()):
+		var e: Vector3 = ends[i] * k
+		_limb(lp, "g_bark", fork, e, 0.3 * k, 0.12 * k, 5, dark, Color(0.8, 0.8, 0.8), 2.0)
+		_blob(lp, "g_foliage", e + Vector3(0, 0.6, 0) * k, Vector3(2.6, 2.0, 2.6) * k, 9, 5, 21 + i * 7, 0.22, -INF, INF, 3.0)
+	_blob(lp, "g_foliage", Vector3(0.1, 9.0, -0.2) * k, Vector3(2.4, 1.8, 2.4) * k, 9, 5, 47, 0.22, -INF, INF, 3.0)
+
+
+## A pollarded tree as on the photos: a crooked trunk with knobby heads, bunches of thin bare shoots on them.
+static func _tree_pollard(lp: LowPoly, k: float) -> void:
+	var dark := Color(0.5, 0.5, 0.5)
+	var mid := Vector3(0.12, 1.8, 0.0) * k
+	var top := Vector3(-0.05, 3.3, 0.1) * k
+	_limb(lp, "g_bark", Vector3.ZERO, mid, 0.3 * k, 0.24 * k, 6, dark, Color(0.8, 0.8, 0.8), 2.0)
+	_limb(lp, "g_bark", mid, top, 0.24 * k, 0.2 * k, 6, dark, Color(0.8, 0.8, 0.8), 2.0)
+	var knobs := [Vector3(0.6, 4.2, 0.2), Vector3(-0.55, 4.4, -0.1), Vector3(0.05, 4.6, -0.55), Vector3(-0.1, 4.3, 0.6)]
+	for i in range(knobs.size()):
+		var e: Vector3 = knobs[i] * k
+		_limb(lp, "g_bark", top, e, 0.17 * k, 0.12 * k, 5, dark, Color(0.8, 0.8, 0.8), 2.0)
+		_blob(lp, "g_bark", e, Vector3(0.22, 0.2, 0.22) * k, 6, 3, 31 + i, 0.25, -INF)
+		var w := 1.3 * k
+		var h := 2.0 * k
+		var ang := float(i) * 0.8
+		for turn in [0.0, PI * 0.5]:
+			var d := Vector3(cos(ang + float(turn)), 0, sin(ang + float(turn))) * w * 0.5
+			_card(lp, "y_twigs", e - d, e + d, e + d + Vector3(0, h, 0), e - d + Vector3(0, h, 0), 1.0, 1.0)
+
+
+## A small bed of flowers: a soil mound with a low concrete kerb and crossing strips of flowers.
+static func _flowers(lp: LowPoly, k: float) -> void:
+	var hx := 0.9 * k
+	var hz := 0.5 * k
+	lp.box("y_soil", Vector3(0, 0.06, 0), Vector3(hx * 2.0, 0.12, hz * 2.0), 1.0)
+	for sz in [-1.0, 1.0]:
+		lp.box("p_concrete", Vector3(0, 0.08, float(sz) * (hz + 0.04)), Vector3(hx * 2.0 + 0.16, 0.16, 0.08), 1.0)
+		lp.box("p_concrete", Vector3(float(sz) * (hx + 0.04), 0.08, 0), Vector3(0.08, 0.16, hz * 2.0), 1.0)
+	var h := 0.45 * k
+	for z in [-0.25, 0.0, 0.25]:
+		var zz := float(z) * hz * 2.0 * 0.8
+		_card(lp, "y_flowers", Vector3(-hx, 0.1, zz), Vector3(hx, 0.1, zz), Vector3(hx, 0.1 + h, zz), Vector3(-hx, 0.1 + h, zz), hx * 2.0, 1.0)
+	for x in [-0.5, 0.5]:
+		var xx := float(x) * hx
+		_card(lp, "y_flowers", Vector3(xx, 0.1, hz), Vector3(xx, 0.1, -hz), Vector3(xx, 0.1 + h, -hz), Vector3(xx, 0.1 + h, hz), hz * 2.0, 1.0)
+
+
+## A frame of green steel tubes from x0 to x1 (local +x) with chain-link in it, at z = 0.
+static func _mesh_panel(lp: LowPoly, x0: float, x1: float, y0: float, y1: float) -> void:
+	var t := 0.05
+	lp.box("y_paint", Vector3((x0 + x1) * 0.5, y1, 0), Vector3(x1 - x0, t, t), 1.0)
+	lp.box("y_paint", Vector3((x0 + x1) * 0.5, y0, 0), Vector3(x1 - x0, t, t), 1.0)
+	lp.box("y_paint", Vector3(x0, (y0 + y1) * 0.5, 0), Vector3(t, y1 - y0, t), 1.0)
+	lp.box("y_paint", Vector3(x1, (y0 + y1) * 0.5, 0), Vector3(t, y1 - y0, t), 1.0)
+	_card(lp, "y_chainlink", Vector3(x0, y0, 0), Vector3(x1, y0, 0), Vector3(x1, y1, 0), Vector3(x0, y1, 0), x1 - x0, y1 - y0)
+
+
+## A green metal gate: `leaves` framed mesh leaves across `width` between two square posts, closed.
+static func _gate(lp: LowPoly, width: float, leaves: int) -> void:
+	var h := 1.5
+	for sx in [-1.0, 1.0]:
+		lp.box("y_paint", Vector3(float(sx) * (width * 0.5 + 0.06), 0.85, 0), Vector3(0.1, 1.7, 0.1), 1.0)
+		lp.box("y_paint", Vector3(float(sx) * (width * 0.5 + 0.06), 1.72, 0), Vector3(0.14, 0.04, 0.14), 1.0)
+	var lw := width / leaves
+	for i in range(leaves):
+		var x0 := -width * 0.5 + i * lw + 0.03
+		var x1 := x0 + lw - 0.06
+		_mesh_panel(lp, x0, x1, 0.08, h)
+		lp.box("y_paint", Vector3((x0 + x1) * 0.5, (0.08 + h) * 0.5, 0), Vector3(x1 - x0, 0.04, 0.04), 1.0)   # middle bar
+	if leaves == 2:
+		lp.box("y_steel", Vector3(0.0, 0.9, 0.06), Vector3(0.12, 0.05, 0.05), 1.0)                       # the latch
+
+
+## A green fence of framed chain-link panels between square posts, 1.3 m high, a post every 2.5 m.
+func _build_fence_green(root: Node3D, pts: Array, id: int) -> void:
+	var n := pts.size()
+	for i in range(n - 1):
+		var a := Vector2(pts[i][0], pts[i][1])
+		var b := Vector2(pts[i + 1][0], pts[i + 1][1])
+		var length := a.distance_to(b)
+		if length < 0.3:
+			continue
+		var d := (b - a) / length
+		var seg := Node3D.new()
+		seg.position = Vector3(a.x, 0.0, a.y)
+		seg.rotation.y = atan2(-d.y, d.x)
+		root.add_child(seg)
+		var lp := LowPoly.new()
+		var col := PackedVector3Array()
+		var panels := maxi(int(round(length / 2.5)), 1)
+		for j in range(panels + 1):
+			if j == panels and i < n - 2:
+				continue
+			var x := length * float(j) / panels
+			lp.box("y_paint", Vector3(x, 0.72, 0), Vector3(0.07, 1.44, 0.07), 1.0)
+			lp.box("y_paint", Vector3(x, 1.45, 0), Vector3(0.1, 0.03, 0.1), 1.0)
+		for j in range(panels):
+			_mesh_panel(lp, length * float(j) / panels + 0.06, length * float(j + 1) / panels - 0.06, 0.1, 1.3)
+		_col_wall(col, 0.0, 0.0, length, 0.0, 1.4)
+		_attach(seg, lp, col, id)
+
+
+## An old 0.4 kV line: weathered concrete poles at the drawn points (slightly leaning, a different lean each),
+## a steel cross arm with three insulators, wires sagging between the poles. The ends and sharp corners get an
+## A-frame (a second, strutting pole), as on the photos.
+func _build_power_line(root: Node3D, pts: Array, id: int) -> void:
+	var lp := LowPoly.new()
+	var col := PackedVector3Array()
+	var n := pts.size()
+	var tops: Array = []        # per pole: [left, mid, right] insulator tops
+	var ph := 8.5
+	for i in range(n):
+		var p := Vector2(pts[i][0], pts[i][1])
+		var d_in := (p - Vector2(pts[i - 1][0], pts[i - 1][1])).normalized() if i > 0 else Vector2.ZERO
+		var d_out := (Vector2(pts[i + 1][0], pts[i + 1][1]) - p).normalized() if i < n - 1 else Vector2.ZERO
+		var along := (d_in + d_out)
+		along = along.normalized() if along.length() > 0.01 else (d_in if d_in != Vector2.ZERO else d_out)
+		var across := Vector2(-along.y, along.x)
+		var lean := Vector2(_hash01(i, 3, n) - 0.5, _hash01(i, 7, n) - 0.5) * 0.5
+		var base := Vector3(p.x, 0.0, p.y)
+		var top := Vector3(p.x + lean.x, ph, p.y + lean.y)
+		_limb(lp, "y_pole", base, top, 0.16, 0.09, 4, Color(0.55, 0.55, 0.55), Color.WHITE, 2.0)
+		var corner := i == 0 or i == n - 1 or (d_in != Vector2.ZERO and d_out != Vector2.ZERO and d_in.dot(d_out) < 0.94)
+		if corner:
+			var strut := d_in if i == n - 1 else -d_out
+			if i > 0 and i < n - 1:
+				strut = (d_in - d_out).normalized()
+			var foot := base + Vector3(strut.x, 0, strut.y) * 1.6
+			_limb(lp, "y_pole", foot, top - Vector3(0, 1.2, 0), 0.14, 0.08, 4, Color(0.55, 0.55, 0.55), Color.WHITE, 2.0)
+			lp.box("y_steel", (base + foot) * 0.5 + Vector3(0, 1.4, 0), Vector3(0.08, 0.08, 0.08), 1.0)
+		var arm_y := ph - 0.35
+		var c := Vector3(p.x + lean.x * 0.96, arm_y, p.y + lean.y * 0.96)
+		var ax := Vector3(across.x, 0, across.y)
+		_limb(lp, "y_steel", c - ax * 0.85, c + ax * 0.85, 0.05, 0.05, 4, Color(0.6, 0.6, 0.6), Color.WHITE)
+		var ins: Array = []
+		for f in [-0.75, 0.0, 0.75]:
+			var at := c + ax * float(f)
+			if f == 0.0:
+				at = Vector3(top.x, ph, top.z)
+			lp.cylinder("y_insulator", at, 0.05, 0.18, 5)
+			ins.append(at + Vector3(0, 0.18, 0))
+		tops.append(ins)
+		col.append_array(_col_column(base, 0.2, 3.0))
+	for i in range(n - 1):
+		for w in range(3):
+			_wire(lp, tops[i][w], tops[i + 1][w], 0.45 + 0.25 * _hash01(i, w, 5))
+	_attach(root, lp, col, id)
+
+
+static func _col_column(base: Vector3, r: float, h: float) -> PackedVector3Array:
+	var col := PackedVector3Array()
+	var c := [Vector2(-r, -r), Vector2(r, -r), Vector2(r, r), Vector2(-r, r)]
+	for i in range(4):
+		var a: Vector2 = c[i]
+		var b: Vector2 = c[(i + 1) % 4]
+		var a0 := base + Vector3(a.x, 0, a.y)
+		var b0 := base + Vector3(b.x, 0, b.y)
+		col.append_array([a0, b0, b0 + Vector3(0, h, 0), a0, b0 + Vector3(0, h, 0), a0 + Vector3(0, h, 0)])
+	return col
+
+
+## A sagging wire from p to q: a thin dark ribbon, seen from both sides.
+static func _wire(lp: LowPoly, p: Vector3, q: Vector3, sag: float) -> void:
+	var steps := 10
+	var dx := Vector3(q.x - p.x, 0, q.z - p.z)
+	var side := Vector3(-dx.z, 0, dx.x).normalized()
+	var th := 0.05
+	for j in range(steps):
+		var f0 := float(j) / steps
+		var f1 := float(j + 1) / steps
+		var a := p.lerp(q, f0) - Vector3(0, sag * 4.0 * f0 * (1.0 - f0), 0)
+		var b := p.lerp(q, f1) - Vector3(0, sag * 4.0 * f1 * (1.0 - f1), 0)
+		_card(lp, "c_black", a, b, b + Vector3(0, th, 0), a + Vector3(0, th, 0), 1.0, 1.0)
+		_card(lp, "c_black", a - side * th * 0.5, b - side * th * 0.5, b + side * th * 0.5, a + side * th * 0.5, 1.0, 1.0)
+
+
+## A concrete pole with an old street lamp on a bent arm (the photos: by the road and the school yard).
+static func _pole_lamp(lp: LowPoly, k: float) -> void:
+	var top := Vector3(0.08, 8.0 * k, 0.0)
+	_limb(lp, "y_pole", Vector3.ZERO, top, 0.15, 0.09, 4, Color(0.55, 0.55, 0.55), Color.WHITE, 2.0)
+	var arm0 := Vector3(0.05, 7.3 * k, 0.0)
+	var arm1 := Vector3(0.0, 7.75 * k, 1.5)
+	_limb(lp, "y_steel", arm0, arm1, 0.04, 0.035, 5)
+	lp.box("y_steel", arm1 + Vector3(0, -0.06, 0.2), Vector3(0.22, 0.1, 0.55), 1.0)
+	lp.box("y_insulator", arm1 + Vector3(0, -0.13, 0.22), Vector3(0.16, 0.04, 0.4), 1.0)
+
+
+## A grass pitch for school sports: artificial turf 40 x 20 m (times k), white lines, two goals with nets.
+## Local +x runs along the pitch.
+static func _pitch(lp: LowPoly, col: PackedVector3Array, k: float) -> void:
+	var hl := 20.0 * k
+	var hw := 10.0 * k
+	var y := 0.07
+	lp.quad_out("y_turf", Vector3(-hl - 1.0, y, -hw - 1.0), Vector3(hl + 1.0, y, -hw - 1.0), Vector3(hl + 1.0, y, hw + 1.0),
+		Vector3(-hl - 1.0, y, hw + 1.0), Vector2(0, 0), Vector2((hl + 1.0) * 0.5, 0), Vector2((hl + 1.0) * 0.5, (hw + 1.0) * 0.5),
+		Vector2(0, (hw + 1.0) * 0.5), Color.WHITE, Color.WHITE, Vector3.UP)
+	var ly := y + 0.008
+	var lw := 0.12
+	var lines := [[-hl, -hw, hl, -hw], [-hl, hw, hl, hw], [-hl, -hw, -hl, hw], [hl, -hw, hl, hw], [0.0, -hw, 0.0, hw]]
+	var box_d := 4.0 * k
+	var box_w := 6.0 * k
+	for sx in [-1.0, 1.0]:
+		var gx := float(sx) * hl
+		var ix := gx - float(sx) * box_d
+		lines.append([gx, -box_w, ix, -box_w])
+		lines.append([gx, box_w, ix, box_w])
+		lines.append([ix, -box_w, ix, box_w])
+	for l in lines:
+		var a := Vector3(float(l[0]), ly, float(l[1]))
+		var b := Vector3(float(l[2]), ly, float(l[3]))
+		var dd := (b - a).normalized()
+		var sd := Vector3(-dd.z, 0, dd.x) * lw * 0.5
+		lp.quad_out("y_line", a - sd, b - sd, b + sd, a + sd, Vector2.ZERO, Vector2(1, 0), Vector2(1, 1), Vector2(0, 1),
+			Color.WHITE, Color.WHITE, Vector3.UP)
+	var seg := 20
+	var r := 3.0 * k
+	for i in range(seg):
+		var a0 := TAU * float(i) / seg
+		var a1 := TAU * float(i + 1) / seg
+		var p0 := Vector3(cos(a0), 0, sin(a0))
+		var p1 := Vector3(cos(a1), 0, sin(a1))
+		lp.quad_out("y_line", p0 * (r - lw * 0.5) + Vector3(0, ly, 0), p1 * (r - lw * 0.5) + Vector3(0, ly, 0),
+			p1 * (r + lw * 0.5) + Vector3(0, ly, 0), p0 * (r + lw * 0.5) + Vector3(0, ly, 0),
+			Vector2.ZERO, Vector2(1, 0), Vector2(1, 1), Vector2(0, 1), Color.WHITE, Color.WHITE, Vector3.UP)
+	# goals: 5 x 2 m, 1.5 m deep at the bottom
+	var gw := 2.5
+	var gh := 2.0
+	var gd := 1.5
+	for sx in [-1.0, 1.0]:
+		var x := float(sx) * hl
+		var back := x + float(sx) * gd
+		for sz in [-1.0, 1.0]:
+			var z := float(sz) * gw
+			lp.box("y_line", Vector3(x, gh * 0.5, z), Vector3(0.1, gh, 0.1), 1.0)
+			_limb(lp, "y_line", Vector3(x, gh, z), Vector3(back, 0.05, z), 0.03, 0.03, 4)
+			lp.box("y_line", Vector3((x + back) * 0.5, 0.03, z), Vector3(gd, 0.05, 0.05), 1.0)
+			_card(lp, "y_net", Vector3(x, 0.0, z), Vector3(back, 0.0, z), Vector3(back, 0.05, z), Vector3(x, gh, z), gd, gh)
+			_col_wall(col, x - 0.05, z - 0.05, x + 0.05, z + 0.05, gh)
+		lp.box("y_line", Vector3(x, gh, 0), Vector3(0.1, 0.1, gw * 2.0 + 0.1), 1.0)
+		lp.box("y_line", Vector3(back, 0.03, 0), Vector3(0.05, 0.05, gw * 2.0), 1.0)
+		_card(lp, "y_net", Vector3(x, gh, -gw), Vector3(x, gh, gw), Vector3(back, 0.05, gw), Vector3(back, 0.05, -gw), gw * 2.0, 2.5)

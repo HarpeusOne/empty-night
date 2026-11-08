@@ -1,5 +1,29 @@
 # Notatki z sesji 2026-11-07 / 11-08 (do wznowienia pracy)
 
+## Piąta sesja 2026-11-08: szkoła (budynek kluczowy nr 2), nazwa Empty Night
+- Gra nazywa się **Empty Night** (kaszubski tytuł „Pùstô noc”), repo `HarpeusOne/empty-night`. Autor przerobił teren
+  kościoła w edytorze (props.json, overrides.json), commituje sam.
+- **Szkoła** jako model ręczny (`src/world/school_model.gd`, opis `docs/key-buildings/school.md`): stara biała szkoła,
+  nowe skrzydło z łukowym dachem, ganek ze schodami, hala z przeszklonym szczytem. Wysokości i podział starej szkoły
+  na części to szacunki ze zdjęć. Zrzuty `docs/look/school_*.png`.
+- Testy zielone (test kolizji liczy teraz kościół i dwa budynki szkoły). Wydajność: 117–171 wywołań rysowania (limit 250).
+- **Poprawki autora, rundy 1–4** (szczegóły w `docs/key-buildings/school.md`): stara szkoła biało-szara, łącznik w kolorach
+  hali; front kuchni (2 okna, drzwi, drabina, dach jednospadowy); ślepy koniec skrzydła zachodniego z szarym pasem;
+  okna piętra nad niskimi dachami; ganek: schody od ziemi do podestu, grube balustrady; **wejście wg zdjęcia autora**:
+  płaski front wiatrołapu (obrys kolizji zmieniony tak samo: `RING_DROP`/`RING_MOVE`), daszek łukowy prostopadle do
+  ściany nad końcem ścieżki, drzwi na osi ścieżki, okno obok, z lewej ściana z oknem, z prawej daszek jednospadowy.
+  Środkowy filar daszku celowo pominięty (decyzja autora).
+- **Obiekty terenu szkoły w edytorze (F2):** stare drzewo liściaste, drzewo ogłowione, rabata z kwiatami, brama i furtka
+  zielone, latarnia na słupie, boisko 40 x 20 m (punkty); zielony płot z siatki i linia energetyczna (słupy betonowe
+  przechylone, podpory „A” na końcach i zakrętach, zwisające druty) jako linie. Tekstury `tools/art/gen_yard_textures.py`
+  (prefiks y_, wpisy w manifeście), zrzuty `tools/yard_props_shot.gd` -> `docs/look/yard_*.png`. Autor: „jest spoko”.
+- Testy zielone na koniec: blockout_collision 10/10, map_editor (40 typów), building_editor, fly.
+- **NIE sprawdzone:** chodzenie wokół szkoły w grze (po schodach ganku nie da się wejść, filary daszków nie blokują);
+  stawianie nowych obiektów myszą w oknie; czy duże pole klikania boiska nie utrudnia zaznaczania obiektów na nim.
+- **Następny krok:** autor ustawia teren szkoły nowymi obiektami i zapisuje (F5). Do zrobienia potem: biblioteka i niski
+  budynek przy parkingu (dziś zwykłe domy z BuildingSet), ewentualnie piłkochwyty przy boisku.
+- Kopie zapasowe modelu szkoły i map_props sprzed zmian leżały w katalogu tymczasowym sesji (poza projektem, znikną).
+
 ## Czwarta sesja 2026-11-08: okna, drzwi i elewacja budynków
 - Autor potwierdził, że wszystko z trzeciej sesji działa (także myszą).
 - **Zakładka Budynki:** **E** = elewacja (6 wykończeń ścian), **O** = tryb okien i drzwi: klik w ścianę zaznacza otwór, przeciąganie

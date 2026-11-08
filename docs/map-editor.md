@@ -87,6 +87,15 @@ Linie: ścieżka z kostki (szara, czerwona, grafitowa), żwirowa, asfaltowa, pł
 żywopłot z tui, żywopłot strzyżony (blok 1 m, z kolizją).
 Place (wielokąty): kostka szara, czerwona, grafitowa, żwir, asfalt.
 
+**Teren szkoły (2026-11-08, wg zdjęć autora):** stare drzewo liściaste (gruby pień, trzy konary, szeroka korona),
+drzewo ogłowione (krzywy pień, guzy z pękami gołych pędów), rabata z kwiatami (obrzeże z betonu), brama metalowa
+zielona (4 m, dwa skrzydła z siatką), furtka zielona, latarnia na słupie betonowym, boisko (40 x 20 m ze sztuczną
+trawą, liniami i dwiema bramkami z siatką; rozmiar zmieniasz [ ]), linia „Płot: zielona siatka” (panele z rurek
+z siatką, słupek co 2,5 m, 1,3 m wysokości), linia energetyczna (betonowe słupy w klikniętych punktach, każdy lekko
+przechylony, poprzeczka z trzema izolatorami, zwisające druty; na końcach i ostrych załamaniach słup z podporą „A”).
+Ławki są te same co przy kościele. Bramę i furtkę stawiaj w przerwie płotu (płot rysuj do jej słupków).
+Zrzuty: `tools/yard_props_shot.gd` -> `docs/look/yard_*.png`; tekstury `tools/art/gen_yard_textures.py` (prefiks `y_`).
+
 **Kostka jako jedna powierzchnia:** wszystkie ścieżki i place z tej samej nawierzchni leżą na tej samej wysokości i mają
 wzór w układzie świata, więc nachodzące na siebie kawałki kostki szarej łączą się bez szwów (tak samo żwir, asfalt).
 Nawierzchnie leżą warstwami: asfalt najniżej, potem żwir, kostka szara, grafitowa, a czerwona na samej górze, więc
